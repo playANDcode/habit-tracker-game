@@ -7,6 +7,10 @@ header {
 	justify-content: space-between;
 }
 
+header > a:hover {
+	color: black;
+}
+
 .text-darkgreen {
 	color: #108050;
 }
