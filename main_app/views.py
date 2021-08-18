@@ -66,4 +66,8 @@ def register(request):
     else:
         return render(request, "main_app/register.html")
 
-
+# Returns the a list of todo objects in json format:
+def todo(request):
+    return JsonResponse(
+        [todo.serialize() for todo in request.user.todo.all()],
+        safe=False)
