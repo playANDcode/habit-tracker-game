@@ -8,8 +8,10 @@ from django.urls import reverse
 
 # Create your views here.
 def index(request):
+    # Display a splash page if the user is not logged in:
     if request.user.is_anonymous:
         return render(request, "main_app/splash.html")
+    # Display the task manager app if the user is logged in:
     else:
         return render(request, "main_app/index.html")
 
@@ -40,7 +42,6 @@ def logout_view(request):
 def register(request):
     if request.method == "POST":
         username = request.POST["username"]
-        email = request.POST["email"]
         nickname = request.POST["nickname"]
 
         # Ensure password matches confirmation
@@ -53,7 +54,8 @@ def register(request):
 
         # Attempt to create new user
         try:
-            user = User.objects.create_user(username, email, password)
+            user = User.objects.create_user(username=username,
+                password=password, nickname=nickname)
             user.save()
         except IntegrityError:
             return render(request, "main_app/register.html", {

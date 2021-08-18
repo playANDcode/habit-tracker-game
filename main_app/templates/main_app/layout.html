@@ -27,12 +27,10 @@
 				</button>
 				<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
 				{% if user.is_authenticated %}
-					<li><a class="dropdown-item" href="#">Action</a></li>
-					<li><a class="dropdown-item" href="#">Another action</a></li>
-					<li><a class="dropdown-item" href="#">Something else here</a></li>
+					<li><a class="dropdown-item" href="/logout">Logout</a></li>
 				{% else %}
 					<li><a class="dropdown-item" href="/login">Login</a></li>
-					<li><a class="dropdown-item" href="/sign_up">Sign Up</a></li>
+					<li><a class="dropdown-item" href="/register">Sign Up</a></li>
 				{% endif %}
 				</ul>
 			</div>

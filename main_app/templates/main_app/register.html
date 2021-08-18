@@ -1,0 +1,42 @@
+{% extends "main_app/layout.html" %}
+{% load static %}
+
+{% block title %}Register{% endblock %}
+
+{% block custom_head_items %}
+<link rel="stylesheet" href="{% static 'main_app/forms.css' %}">
+{% endblock %}
+
+{% block body %}
+<main class="text-center form-signin">
+	<form method="POST" action="/register">
+		<h1 class="h3 mb-3 fw-normal">Registration Form</h1>
+		<div class="form-floating">
+			<input type="text" name="username" class="form-control" id="floatingInput" placeholder="username">
+			<label for="floatingInput">Username</label>
+		</div>
+		<div class="form-floating">
+			<input type="text" name="nickname" class="form-control" id="floatingInput" placeholder="Nickname" maxlength="10">
+			<label for="floatingInput">Nickname</label>
+		</div>
+		<div class="form-floating">
+			<input type="password" class="form-control" name="password" id="floatingPassword" placeholder="Password">
+			<label for="floatingPassword">Password</label>
+		</div>
+		<div class="form-floating mb-3">
+			<input type="password" class="form-control" name="confirmation" id="floatingPassword" placeholder="Password">
+			<label for="floatingPassword">Confirm Password</label>
+		</div>
+		{% csrf_token %}
+		<button class="w-100 btn btn-lg btn-primary" type="submit">Sign Up</button>
+	</form>
+</main>
+{% endblock %} 
+
+<div>
+	<div>
+		<div class="focused-div">
+			Lorem ipsum.
+		</div>
+	</div>
+</div>
