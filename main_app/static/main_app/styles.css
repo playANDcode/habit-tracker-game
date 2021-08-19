@@ -48,9 +48,8 @@ header > a:hover {
 
 #main_div {
 	min-height: 70vh;
-	margin: 12px;
+	margin: 1px;
 	background-color: #fafafa;
-	padding-top: 12px;
 }
 
 
@@ -86,4 +85,25 @@ header > a:hover {
 	padding: 10px;
 	position: absolute;
 	right: 0;
+}
+
+#profile_pic {
+	display: inline-block;
+	width: 130px;
+	height: 130px;
+	background-color: #d0ffff;
+}
+
+#profile_banner {
+	display: flex;
+}
+
+#profile_banner div {
+	max-width: 300px;
+	margin-left: 0;
+}
+
+#profile_banner > div > small {
+	font-size: 0.8em;
+	font-weight: 600;
 }

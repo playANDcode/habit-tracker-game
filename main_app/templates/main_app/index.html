@@ -1,8 +1,27 @@
 {% extends "main_app/layout.html" %}
+{% load static %}
 {% block body %}
+
+
 <div id="main_div" class="row">
+	<!-- Column 1 -->
 	<div class="col-sm border-start">
+		<div id="profile_banner" class="my-3">
+			<img src="{% static 'main_app/profiles/profile_sample.svg' %}" alt="Avatar">
+			<div class="container-fluid">
+				<small>Health</small>
+				<div class="progress">
+					<div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">50/50</div>
+				</div>
+				<small>Exp</small>
+				<div class="progress">
+					<div class="progress-bar bg-info" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">100/120</div>
+				</div>
+				<h6 class="mt-2 border-top">Level 1</h6>
+			</div>
+		</div>
 		<h3>Tasks</h3>
+		<!-- Navigation -->
 		<ul class="nav nav-tabs" id="myTab" role="tablist">
 			<li class="nav-item" role="presentation">
 				<button class="nav-link active" id="todo-tab" data-bs-toggle="tab" data-bs-target="#todo" type="button" role="tab" aria-controls="todo" aria-selected="true">Todo</button>
@@ -14,6 +33,7 @@
 				<button class="nav-link" id="dailies-tab" data-bs-toggle="tab" data-bs-target="#dailies" type="button" role="tab" aria-controls="dailies" aria-selected="false">Dailies</button>
 			</li>
 		</ul>
+		<!-- Actual Tasks -->
 		<div class="tab-content" id="myTabContent">
 			<div class="tab-pane fade show active" id="todo" role="tabpanel" aria-labelledby="todo-tab">
 				<div class="item border-bottom mb-1">
@@ -42,7 +62,8 @@
 		</div>
 		
 	</div>
-	<div class="col-sm-4 border-start">
+	<!-- Column 2 -->
+	<div class="col-sm-4 border-start pt-3">
 		<h3>Rewards</h3>
 	</div>
 </div>
