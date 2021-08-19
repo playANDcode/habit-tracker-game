@@ -1,5 +1,50 @@
 {% extends "main_app/layout.html" %}
 {% block body %}
-You are logged in!
+<div id="main_div" class="row">
+	<div class="col-sm border-start">
+		<h3>Tasks</h3>
+		<ul class="nav nav-tabs" id="myTab" role="tablist">
+			<li class="nav-item" role="presentation">
+				<button class="nav-link active" id="todo-tab" data-bs-toggle="tab" data-bs-target="#todo" type="button" role="tab" aria-controls="todo" aria-selected="true">Todo</button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="nav-link" id="habits-tab" data-bs-toggle="tab" data-bs-target="#habits" type="button" role="tab" aria-controls="habits" aria-selected="false">Habits</button>
+			</li>
+			<li class="nav-item" role="presentation">
+				<button class="nav-link" id="dailies-tab" data-bs-toggle="tab" data-bs-target="#dailies" type="button" role="tab" aria-controls="dailies" aria-selected="false">Dailies</button>
+			</li>
+		</ul>
+		<div class="tab-content" id="myTabContent">
+			<div class="tab-pane fade show active" id="todo" role="tabpanel" aria-labelledby="todo-tab">
+				<div class="item border-bottom mb-1">
+					<button class="btn">
+						<i class="bi bi-check-circle"></i>
+					</button>
+					<div class="py-1 overflow-hide">
+						<div>Hello</div>
+						<small class="text-secondary">Description</small>
+					</div>
+					<div class="py-1 datetime"><small>August 12</small></div>
+				</div>
+				<div class="item border-bottom">
+					<button class="btn">
+						<i class="bi bi-check-circle"></i>
+					</button>
+					<div class="py-1">
+						<div>Hello</div>
+						<small class="text-secondary"></small>
+					</div>
+					<div class="py-1 datetime"><small>August 12</small></div>
+				</div>
+			</div>
+			<div class="tab-pane fade" id="habits" role="tabpanel" aria-labelledby="habits-tab">Habits</div>
+			<div class="tab-pane fade" id="dailies" role="tabpanel" aria-labelledby="dailies-tab">Dailies</div>
+		</div>
+		
+	</div>
+	<div class="col-sm-4 border-start">
+		<h3>Rewards</h3>
+	</div>
+</div>
 
 {% endblock %}

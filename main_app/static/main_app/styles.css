@@ -46,3 +46,44 @@ header > a:hover {
 	background-color: #D8F3DC;
 }
 
+#main_div {
+	min-height: 70vh;
+	margin: 12px;
+	background-color: #fafafa;
+	padding-top: 12px;
+}
+
+
+#main_div a {
+	color: black;
+}
+
+#main_div .nav-link {
+	color: #056e41;
+}
+
+#main_div .nav-link.active {
+	color: black;
+}
+
+.item {
+	display: flex;
+	position: relative;
+	padding-right: 5.5em;
+}
+
+.item button {
+	background-color: #acffe3;
+	border-radius: 0;
+	margin-right: 0.4em;
+}
+
+.overflow-hide {
+	overflow: hidden;
+}
+
+.datetime {
+	padding: 10px;
+	position: absolute;
+	right: 0;
+}
