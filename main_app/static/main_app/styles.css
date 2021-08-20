@@ -72,9 +72,16 @@ header > a:hover {
 }
 
 .item button {
-	background-color: #acffe3;
 	border-radius: 0;
 	margin-right: 0.4em;
+}
+
+.bg-lightblue {
+	background-color: #acffe3;
+}
+
+.bg-lightblue:hover {
+	background-color: #9ff9d7;
 }
 
 .overflow-hide {
@@ -107,3 +114,10 @@ header > a:hover {
 	font-size: 0.8em;
 	font-weight: 600;
 }
+
+.add-item button:hover {
+	background-color: #f1f1f1 !important;
+}
+
+
+

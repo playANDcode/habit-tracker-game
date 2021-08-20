@@ -1,0 +1,2 @@
+# Exclude the JSX build files
+/main_app/static/main_app/js/node_modules

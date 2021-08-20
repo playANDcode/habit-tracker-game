@@ -15,6 +15,7 @@ class Todo(models.Model):
 
     def serialize(self):
         return {
+            "id": self.id,
             "title": self.title,
             "description": self.description,
             "created": self.created,
