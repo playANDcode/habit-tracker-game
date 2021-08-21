@@ -1,10 +1,12 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponse
-from .models import User
+from .models import User, Todo
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
+from datetime import datetime
+import json
 
 # Create your views here.
 def index(request):
@@ -66,8 +68,23 @@ def register(request):
     else:
         return render(request, "main_app/register.html")
 
-# Returns the a list of todo objects in json format:
-def todo(request):
+
+# The following view manages all Todo related actions 
+# Actions: list, edit, mark as complete
+# Default action returns a list of todo objects
+@login_required
+def todos(request):
+    if request.method == "PUT":
+        try:
+            data = json.loads(request.body)
+            todo = Todo.objects.get(id=data["id"])
+        except:
+            return HttpResponse("Todo object not found", status=404)
+        todo.completed = datetime.now()
+        todo.save()
+        return HttpResponse(status=204)
+    # For a GET request:
+    # Returns the a list of todo objects in json format:
     return JsonResponse(
         [todo.serialize() for todo in request.user.todo.all()],
         safe=False)

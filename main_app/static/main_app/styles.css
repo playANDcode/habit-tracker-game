@@ -65,13 +65,13 @@ header > a:hover {
 	color: black;
 }
 
-.item {
+.todo-item {
 	display: flex;
 	position: relative;
 	padding-right: 5.5em;
 }
 
-.item button {
+.todo-item button {
 	border-radius: 0;
 	margin-right: 0.4em;
 }

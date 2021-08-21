@@ -1,12 +1,15 @@
-// A single todo item:
+// Import csrf token:
+import csrftoken from "./csrf.js"; // A single todo item:
+
 function TodoItem({
   todo
 }) {
   return /*#__PURE__*/React.createElement("div", {
-    className: "item bg-light border-bottom mb-1"
+    id: "todo" + todo.id,
+    className: "todo-item bg-light border-bottom mb-1"
   }, /*#__PURE__*/React.createElement("button", {
     className: "btn bg-lightblue",
-    onClick: remove_todo
+    onClick: () => remove_todo(todo.id)
   }, /*#__PURE__*/React.createElement("i", {
     className: "bi bi-check-circle"
   })), /*#__PURE__*/React.createElement("div", {
@@ -64,8 +67,20 @@ function time_remain(deadline_str) {
 } // Used to mark a todo as completed:
 
 
-function remove_todo() {
+function remove_todo(todo_id) {
   alert("removed");
+  let todo_item_el = document.querySelector("#todo" + todo_id);
+  todo_item_el.remove();
+  fetch("/todos", {
+    method: "PUT",
+    headers: {
+      "X-CSRFToken": csrftoken
+    },
+    body: JSON.stringify({
+      id: todo_id,
+      action: "check"
+    })
+  }).then(response => console.log(response));
 } // Used to display all of the todo items together:
 
 
@@ -78,9 +93,15 @@ export default class Todos extends React.Component {
   }
 
   componentDidMount() {
-    fetch("/todo").then(response => response.json()).then(todo_list => {
+    // Fetch all todos from Django if the element mounts:
+    fetch("/todos").then(response => response.json()).then(todo_list_all => {
+      // Filter all the todos that are not yet complete:
+      let todo_list_filtered = todo_list_all.filter(todo => {
+        return todo.completed == null;
+      });
+      console.log(todo_list_filtered);
       this.setState({
-        todo_list: todo_list
+        todo_list: todo_list_filtered
       });
     });
   }
@@ -93,4 +114,3 @@ export default class Todos extends React.Component {
   }
 
 }
-ReactDOM.render( /*#__PURE__*/React.createElement(Todos, null), document.querySelector("#todos"));
