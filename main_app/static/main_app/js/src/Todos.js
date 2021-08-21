@@ -1,3 +1,4 @@
+// A single todo item:
 function TodoItem({todo}) {
 	return (
 		<div className="item bg-light border-bottom mb-1">
@@ -17,6 +18,7 @@ function TodoItem({todo}) {
 	)
 }
 
+// "Add a todo" button:
 function AddTodo() {
 	return (
 		<div className="mb-1 text-center add-item">
@@ -64,11 +66,13 @@ function time_remain(deadline_str) {
 	return remain;
 }
 
+// Used to mark a todo as completed:
 function remove_todo() {
 	alert("removed")
 }
 
-class Todos extends React.Component {
+// Used to display all of the todo items together:
+export default class Todos extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {todo_list: []}

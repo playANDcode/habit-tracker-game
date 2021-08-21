@@ -25,6 +25,10 @@ SECRET_KEY = 'django-insecure-nhsj$$6^7zodjf=ma&u=08_8zuavk=lt1are9pw*wn+=u#okbd
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# Used to serve the correct MIMEtype for javascript:
+import mimetypes
+mimetypes.add_type("text/javascript", ".js", True)
+
 ALLOWED_HOSTS = []
 
 

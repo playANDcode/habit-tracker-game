@@ -1,3 +1,4 @@
+// A single todo item:
 function TodoItem({
   todo
 }) {
@@ -15,7 +16,8 @@ function TodoItem({
   }, todo.description)), /*#__PURE__*/React.createElement("div", {
     className: "py-1 datetime"
   }, /*#__PURE__*/React.createElement("small", null, time_remain(todo.deadline))));
-}
+} // "Add a todo" button:
+
 
 function AddTodo() {
   return /*#__PURE__*/React.createElement("div", {
@@ -59,13 +61,15 @@ function time_remain(deadline_str) {
 
   ;
   return remain;
-}
+} // Used to mark a todo as completed:
+
 
 function remove_todo() {
   alert("removed");
-}
+} // Used to display all of the todo items together:
 
-class Todos extends React.Component {
+
+export default class Todos extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -89,5 +93,4 @@ class Todos extends React.Component {
   }
 
 }
-
 ReactDOM.render( /*#__PURE__*/React.createElement(Todos, null), document.querySelector("#todos"));

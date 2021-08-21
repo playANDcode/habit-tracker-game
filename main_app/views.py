@@ -71,3 +71,4 @@ def todo(request):
     return JsonResponse(
         [todo.serialize() for todo in request.user.todo.all()],
         safe=False)
+

@@ -9,7 +9,9 @@
 
 		<!-- Profile Banner -->
 		<div id="profile_banner" class="my-3">
+			<!-- Profile Avatar -->
 			<img src="{% static 'main_app/profiles/profile_sample.svg' %}" alt="Avatar">
+			<!-- Profile Status -->
 			<div class="container-fluid">
 				<small>Health 50/50</small>
 				<div class="progress">
@@ -27,16 +29,19 @@
 		<h3>Tasks</h3>
 		<!-- Navigation -->
 		<ul class="nav nav-tabs" id="myTab" role="tablist">
+			<!-- Todos -->
 			<li class="nav-item" role="presentation">
 				<button class="nav-link active" id="todos-tab" data-bs-toggle="tab" data-bs-target="#todos" type="button" role="tab" aria-controls="todos" aria-selected="true">
 					Todos
 				</button>
 			</li>
+			<!-- Habits -->
 			<li class="nav-item" role="presentation">
 				<button class="nav-link" id="habits-tab" data-bs-toggle="tab" data-bs-target="#habits" type="button" role="tab" aria-controls="habits" aria-selected="false">
 					Habits
 				</button>
 			</li>
+			<!-- Dailies -->
 			<li class="nav-item" role="presentation">
 				<button class="nav-link" id="dailies-tab" data-bs-toggle="tab" data-bs-target="#dailies" type="button" role="tab" aria-controls="dailies" aria-selected="false">
 					Dailies
@@ -47,10 +52,12 @@
 		<div class="tab-content p-1 bg-white border border-top-0" id="myTabContent">
 			<!-- Todo Tab -->
 			<div class="tab-pane fade show active" id="todos" role="tabpanel" aria-labelledby="todos-tab">
-			<!-- Todo Items -->
+				<!-- Todo Items -->
 			</div>
+
 			<!-- Habits Tab -->
 			<div class="tab-pane fade" id="habits" role="tabpanel" aria-labelledby="habits-tab">Habits</div>
+
 			<!-- Dailies Tab -->
 			<div class="tab-pane fade" id="dailies" role="tabpanel" aria-labelledby="dailies-tab">Dailies</div>
 		</div>
@@ -63,6 +70,6 @@
 </div>
 
 <!-- JS -->
-<script src={% static 'main_app/js/script.js' %}></script>
+<script type="module" src={% static 'main_app/js/index.js' %}></script>
 
 {% endblock %}
