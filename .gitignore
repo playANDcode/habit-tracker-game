@@ -1,4 +1,4 @@
 # Exclude the JSX build files
 /main_app/static/main_app/js/node_modules
 # Exclude any vim swap file
-**.swp
+**/*.swp
