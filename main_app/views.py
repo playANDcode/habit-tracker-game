@@ -17,6 +17,7 @@ def index(request):
     else:
         return render(request, "main_app/index.html")
 
+# Login the user:
 def login_view(request):
     if request.method == "GET":
         return render(request, "main_app/login.html")
@@ -36,11 +37,12 @@ def login_view(request):
             return render(request, "main_app/login.html", {
                 "message": "Invalid username and/or password."
             })
-
+# Logout:
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
  
+# Register / Sign Up
 def register(request):
     if request.method == "POST":
         username = request.POST["username"]
@@ -71,7 +73,7 @@ def register(request):
 
 # The following view manages all Todo related actions 
 # Actions: list, edit, mark as complete
-# Default action returns a list of todo objects
+# Default action (using GET) returns a list of todo objects
 @login_required
 def todos(request):
     if request.method == "PUT":
@@ -80,12 +82,21 @@ def todos(request):
             todo = Todo.objects.get(id=data["id"])
         except:
             return HttpResponse("Todo object not found", status=404)
-        todo.completed = datetime.now()
-        todo.save()
-        return HttpResponse(status=204)
+        if data["action"] == "mark":
+            todo.completed = datetime.now()
+            todo.save()
+            return JsonResponse(
+                [todo.serialize() for todo in request.user.todo.all()],
+                safe=False, status=200)
+        elif data["action"] == "unmark":
+            todo.completed = None
+            todo.save()
+            return JsonResponse(
+                [todo.serialize() for todo in request.user.todo.all()],
+                safe=False, status=200)
     # For a GET request:
     # Returns the a list of todo objects in json format:
     return JsonResponse(
         [todo.serialize() for todo in request.user.todo.all()],
-        safe=False)
+        safe=False, status=200)
 

@@ -2,29 +2,53 @@
 import csrftoken from "./csrf.js"
 
 // A single todo item:
-function TodoItem({todo}) {
-    return (
-        <div 
-            id={"todo" + todo.id} 
-            className="todo-item bg-light border-bottom mb-1"
-        >
-            <button 
-                className="btn bg-lightblue" 
-                onClick={() => remove_todo(todo.id)}
+class TodoItem extends React.Component {
+    // Used to mark a todo as completed:
+    remove_todo(todo_id) {
+        alert("removed");
+
+        // Send a fetch request to mark the todo:
+        fetch("/todos", {
+            method: "PUT",
+            headers: {"X-CSRFToken": csrftoken},
+            body: JSON.stringify({
+                id: todo_id,
+                action: "check",
+            })
+        }).then(response => {
+            if (!response.ok) {
+                response.text().then(text => alert(text));
+            } else {
+                this.props.fetch_incomplete();
+            }
+        })
+    }
+    render () {
+        return (
+            <div 
+                id={"todo" + this.props.todo.id} 
+                className="todo-item bg-light border-bottom mb-1"
             >
-                <i className="bi bi-check-circle"></i>
-            </button>
-            <div className="py-1 overflow-hide">
-                <div>{todo.title}</div>
-                <small className="text-secondary">
-                    {todo.description}
-                </small>
+                <button 
+                    className="btn bg-lightblue" 
+                    onClick={() => this.remove_todo(this.props.todo.id)}
+                >
+                    <i className="bi bi-check-circle"></i>
+                </button>
+                <div className="py-1 overflow-hide">
+                    <div>{this.props.todo.title}</div>
+                    <small className="text-secondary">
+                        {this.props.todo.description}
+                    </small>
+                </div>
+                <div className="py-1 datetime">
+                    <small>
+                        {time_remain(this.props.todo.deadline)}
+                    </small>
+                </div>
             </div>
-            <div className="py-1 datetime">
-                <small>{time_remain(todo.deadline)}</small>
-            </div>
-        </div>
-    )
+        )
+    }
 }
 
 // "Add a todo" button:
@@ -75,30 +99,16 @@ function time_remain(deadline_str) {
     return remain;
 }
 
-// Used to mark a todo as completed:
-function remove_todo(todo_id) {
-    alert("removed");
-    let todo_item_el = document.querySelector("#todo" + todo_id);
-    todo_item_el.remove();
 
-    fetch("/todos", {
-        method: "PUT",
-        headers: {"X-CSRFToken": csrftoken},
-        body: JSON.stringify({
-            id: todo_id,
-            action: "check",
-        })
-    }).then(response => console.log(response))
-}
-
-// Used to display all of the todo items together:
-export default class Todos extends React.Component {
+// Used to display all of the INCOMPLETE todo items together:
+class Todos extends React.Component {
     constructor(props) {
         super(props);
         this.state = {todo_list: []}
+        this.fetch_incomplete = this.fetch_incomplete.bind(this);
     }
 
-    componentDidMount() {
+    fetch_incomplete() {
         // Fetch all todos from Django if the element mounts:
         fetch("/todos").then(response => response.json())
             .then(todo_list_all => {
@@ -111,15 +121,28 @@ export default class Todos extends React.Component {
             });
     }
 
+    componentDidMount() {
+        this.fetch_incomplete();
+    }
+
     render () {
         return (
             <div>
                 <AddTodo />
                 {this.state.todo_list.map(todo => (
-                    <TodoItem key = {todo.id} todo = {todo} />
+                    <TodoItem 
+                        key = {todo.id} 
+                        todo = {todo} 
+                        fetch_incomplete = {this.fetch_incomplete}
+                    />
                 ))}
             </div>
         )
     }
+}
+
+export default function TodoAll() {
+    ReactDOM.render(<Todos />, document.querySelector("#todos"));
+    return null;
 }
 

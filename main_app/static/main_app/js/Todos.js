@@ -1,24 +1,47 @@
 // Import csrf token:
 import csrftoken from "./csrf.js"; // A single todo item:
 
-function TodoItem({
-  todo
-}) {
-  return /*#__PURE__*/React.createElement("div", {
-    id: "todo" + todo.id,
-    className: "todo-item bg-light border-bottom mb-1"
-  }, /*#__PURE__*/React.createElement("button", {
-    className: "btn bg-lightblue",
-    onClick: () => remove_todo(todo.id)
-  }, /*#__PURE__*/React.createElement("i", {
-    className: "bi bi-check-circle"
-  })), /*#__PURE__*/React.createElement("div", {
-    className: "py-1 overflow-hide"
-  }, /*#__PURE__*/React.createElement("div", null, todo.title), /*#__PURE__*/React.createElement("small", {
-    className: "text-secondary"
-  }, todo.description)), /*#__PURE__*/React.createElement("div", {
-    className: "py-1 datetime"
-  }, /*#__PURE__*/React.createElement("small", null, time_remain(todo.deadline))));
+class TodoItem extends React.Component {
+  // Used to mark a todo as completed:
+  remove_todo(todo_id) {
+    alert("removed"); // Send a fetch request to mark the todo:
+
+    fetch("/todos", {
+      method: "PUT",
+      headers: {
+        "X-CSRFToken": csrftoken
+      },
+      body: JSON.stringify({
+        id: todo_id,
+        action: "check"
+      })
+    }).then(response => {
+      if (!response.ok) {
+        response.text().then(text => alert(text));
+      } else {
+        this.props.fetch_incomplete();
+      }
+    });
+  }
+
+  render() {
+    return /*#__PURE__*/React.createElement("div", {
+      id: "todo" + this.props.todo.id,
+      className: "todo-item bg-light border-bottom mb-1"
+    }, /*#__PURE__*/React.createElement("button", {
+      className: "btn bg-lightblue",
+      onClick: () => this.remove_todo(this.props.todo.id)
+    }, /*#__PURE__*/React.createElement("i", {
+      className: "bi bi-check-circle"
+    })), /*#__PURE__*/React.createElement("div", {
+      className: "py-1 overflow-hide"
+    }, /*#__PURE__*/React.createElement("div", null, this.props.todo.title), /*#__PURE__*/React.createElement("small", {
+      className: "text-secondary"
+    }, this.props.todo.description)), /*#__PURE__*/React.createElement("div", {
+      className: "py-1 datetime"
+    }, /*#__PURE__*/React.createElement("small", null, time_remain(this.props.todo.deadline))));
+  }
+
 } // "Add a todo" button:
 
 
@@ -64,35 +87,19 @@ function time_remain(deadline_str) {
 
   ;
   return remain;
-} // Used to mark a todo as completed:
+} // Used to display all of the INCOMPLETE todo items together:
 
 
-function remove_todo(todo_id) {
-  alert("removed");
-  let todo_item_el = document.querySelector("#todo" + todo_id);
-  todo_item_el.remove();
-  fetch("/todos", {
-    method: "PUT",
-    headers: {
-      "X-CSRFToken": csrftoken
-    },
-    body: JSON.stringify({
-      id: todo_id,
-      action: "check"
-    })
-  }).then(response => console.log(response));
-} // Used to display all of the todo items together:
-
-
-export default class Todos extends React.Component {
+class Todos extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       todo_list: []
     };
+    this.fetch_incomplete = this.fetch_incomplete.bind(this);
   }
 
-  componentDidMount() {
+  fetch_incomplete() {
     // Fetch all todos from Django if the element mounts:
     fetch("/todos").then(response => response.json()).then(todo_list_all => {
       // Filter all the todos that are not yet complete:
@@ -106,11 +113,21 @@ export default class Todos extends React.Component {
     });
   }
 
+  componentDidMount() {
+    this.fetch_incomplete();
+  }
+
   render() {
     return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(AddTodo, null), this.state.todo_list.map(todo => /*#__PURE__*/React.createElement(TodoItem, {
       key: todo.id,
-      todo: todo
+      todo: todo,
+      fetch_incomplete: this.fetch_incomplete
     })));
   }
 
+}
+
+export default function TodoAll() {
+  ReactDOM.render( /*#__PURE__*/React.createElement(Todos, null), document.querySelector("#todos"));
+  return null;
 }
