@@ -1,7 +1,9 @@
-// Import csrf token:
 import csrftoken from "./csrf.js";
 import ReactDOM from "react-dom";
 import React from "react";
+import Datetime from "react-datetime";
+import "react-datetime/css/react-datetime.css";
+import Modal from "./components/Modal.js";
 
 // A single todo item:
 function TodoItem(props) {
@@ -115,32 +117,17 @@ function AddTodoButton() {
     )
 }
 
-function AddTodoModal() {
+
+function AddTodoForm() {
     return (
-      <div className="modal fade" id="add-todo" tabindex="-1" aria-labelledby="addTodoModal" aria-hidden="true">
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="addTodoModal">
-                Add a Todo
-              </h5>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div className="modal-body">
-              <form action="">
-                <input type="text" className="form-control mb-2" name="title" placeholder="Title"/>
-                <textarea name="description" className="form-control mb-2" placeholder="Description"/>
-                <input type="datetime-local" className="form-control" placeholder="Deadline"/>
-              </form>
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-success">
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+        <form action="">
+            <input type="text" className="form-control mb-2" name="title" placeholder="Title"/>
+            <textarea name="description" className="form-control mb-2" placeholder="Description"/>
+            <Datetime inputProps={{
+                name: "deadline",
+                placeholder: "Deadline"
+            }}/>
+        </form>
     )
 }
 
@@ -162,7 +149,7 @@ function Todos() {
     return (
         <div>
             <AddTodoButton />
-            <AddTodoModal />
+            <Modal title="Add a Todo" content=<AddTodoForm />/>
             {todoAll.map(todo => (
                 <TodoItem 
                     key = {todo.id} 
