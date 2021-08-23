@@ -72,7 +72,7 @@ def register(request):
 
 
 # The following view manages all Todo related actions 
-# Actions: list, edit, mark as complete
+# Actions: show list, create, edit, mark as complete
 # Default action (using GET) returns a list of todo objects
 @login_required
 def todos(request):
@@ -94,9 +94,24 @@ def todos(request):
             todo.save()
             # Return the updated Todo object:
             return JsonResponse(todo.serialize(), status=200)
+    # For creating a Todo:
+    elif request.method == "POST":
+        try:
+            data = request.POST
+            deadline = datetime.fromisoformat(
+                data["deadline"].replace("Z", "+00:00"))
+            todo = Todo.objects.create(
+                title = data["title"],
+                description = data["description"],
+                deadline = deadline)
+            request.user.todo.add(todo)
+            return JsonResponse(todo.serialize(), status=201)
+        except:
+            return HttpResponse("Fail", status=400)
     # For a GET request:
     # Returns the a list of todo objects in json format:
+    todo_all = request.user.todo.all().order_by("created")
     return JsonResponse(
-        [todo.serialize() for todo in request.user.todo.all()],
+        [todo.serialize() for todo in todo_all],
         safe=False, status=200)
 

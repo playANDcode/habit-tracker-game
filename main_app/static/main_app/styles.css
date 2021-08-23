@@ -131,5 +131,11 @@ header > a:hover {
 	background-color: #f1f1f1 !important;
 }
 
+.rdtPicker {
+	border: 1px solid #d0d0d0 !important;
+	border-radius: 10px;
+}
 
-
+td.rdtToday {
+	background-color: #e1effb;
+}

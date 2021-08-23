@@ -1,9 +1,12 @@
-import csrftoken from "./csrf.js";
 import ReactDOM from "react-dom";
 import React from "react";
+// Datetime Picker for setting deadlines:
 import Datetime from "react-datetime";
 import "react-datetime/css/react-datetime.css";
+// Bootstrap Modal:
 import Modal from "./components/Modal.js";
+// CSRF token for Django:
+import csrftoken from "./csrf.js";
 
 // A single todo item:
 function TodoItem(props) {
@@ -17,7 +20,7 @@ function TodoItem(props) {
             headers: {"X-CSRFToken": csrftoken},
             body: JSON.stringify({
                 id: todo.id,
-                action: action, // "mark" or "unmark"
+                action: action, // can be "mark" or "unmark"
             })
         }).then(response => {
             if (!response.ok) {
@@ -35,6 +38,7 @@ function TodoItem(props) {
 
     return (
         // Classes of some element changes based on task completion 
+        // The div element for a single Todo item (buttons included):
         <div 
             id={"todo" + todo.id} 
             className={todo.completed
@@ -118,9 +122,29 @@ function AddTodoButton() {
 }
 
 
-function AddTodoForm() {
+function AddTodoForm({setTodoAll, todoAll}) {
+    let submit = (event) => {
+        event.preventDefault();
+        let formData = new FormData(event.target);
+        let deadline = new Date(formData.get("deadline"));
+        formData.set("deadline", deadline.toISOString());
+        fetch("/todos", {
+            method: "POST",
+            headers: {"X-CSRFToken": csrftoken},
+            body: formData
+        }).then(response => {
+            if (response.ok) {
+                response.json().then(newTodo => {
+                    setTodoAll([...todoAll, newTodo])
+                })
+            } else {
+                alert("Something is wrong")
+            }
+        });
+        event.target.reset();
+    }
     return (
-        <form action="">
+        <form id="todoForm" onSubmit={submit}>
             <input type="text" className="form-control mb-2" name="title" placeholder="Title"/>
             <textarea name="description" className="form-control mb-2" placeholder="Description"/>
             <Datetime inputProps={{
@@ -137,6 +161,7 @@ function Todos() {
 
     // This only runs on mount (does not run on state update);
     React.useEffect(() => {
+        // Fetch all todos from Django:
         fetch("/todos").then(response => response.json())
             .then(todoAllFetched => {
                 setTodoAll(todoAllFetched);
@@ -149,7 +174,14 @@ function Todos() {
     return (
         <div>
             <AddTodoButton />
-            <Modal title="Add a Todo" content=<AddTodoForm />/>
+            <Modal 
+                title="Add a Todo" 
+                content=<AddTodoForm 
+                    todoAll={todoAll}
+                    setTodoAll={setTodoAll}
+                />
+                formName="todoForm"
+            />
             {todoAll.map(todo => (
                 <TodoItem 
                     key = {todo.id} 
