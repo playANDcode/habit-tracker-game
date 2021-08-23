@@ -5,7 +5,7 @@ from .models import User, Todo
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 
 # Create your views here.
@@ -82,18 +82,18 @@ def todos(request):
             todo = Todo.objects.get(id=data["id"])
         except:
             return HttpResponse("Todo object not found", status=404)
+        # Mark Todo as completed:
         if data["action"] == "mark":
-            todo.completed = datetime.now()
+            todo.completed = datetime.now(timezone.utc)
             todo.save()
-            return JsonResponse(
-                [todo.serialize() for todo in request.user.todo.all()],
-                safe=False, status=200)
+            # Return the updated Todo object:
+            return JsonResponse(todo.serialize(), status=200)
+        # Unmark Todo (set as incompleted):
         elif data["action"] == "unmark":
             todo.completed = None
             todo.save()
-            return JsonResponse(
-                [todo.serialize() for todo in request.user.todo.all()],
-                safe=False, status=200)
+            # Return the updated Todo object:
+            return JsonResponse(todo.serialize(), status=200)
     # For a GET request:
     # Returns the a list of todo objects in json format:
     return JsonResponse(

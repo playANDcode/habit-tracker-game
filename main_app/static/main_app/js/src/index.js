@@ -1,3 +1,4 @@
-import TodoAll from "./Todos.js";
+import Todos from "./Todos.js";
+import ReactDOM from "react-dom";
 
-ReactDOM.render(<TodoAll />, document.querySelector("#todos"));
+ReactDOM.render(<Todos />, document.querySelector("#todos"));

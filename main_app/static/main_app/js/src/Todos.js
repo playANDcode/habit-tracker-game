@@ -1,64 +1,68 @@
 // Import csrf token:
-import csrftoken from "./csrf.js"
+import csrftoken from "./csrf.js";
+import ReactDOM from "react-dom";
+import React from "react";
 
 // A single todo item:
-class TodoItem extends React.Component {
-    // Used to mark a todo as completed:
-    remove_todo(todo_id) {
-        alert("removed");
-
-        // Send a fetch request to mark the todo:
+function TodoItem(props) {
+    const [todo, setTodo] = React.useState(props.todo);
+    // Used to mark/unmark a todo as completed:
+    function markTodo(action) {
+        // "action" parameter can be "mark" or "unmark"
+        // Send a fetch request to mark the todo in Django:
         fetch("/todos", {
             method: "PUT",
             headers: {"X-CSRFToken": csrftoken},
             body: JSON.stringify({
-                id: todo_id,
-                action: "check",
+                id: todo.id,
+                action: action, // "mark" or "unmark"
             })
         }).then(response => {
             if (!response.ok) {
+                // If something is wrong
                 response.text().then(text => alert(text));
             } else {
-                this.props.fetch_incomplete();
+                alert("Success!");
+                // Update the todo element:
+                response.json().then(json => {
+                    setTodo(json);
+                });
             }
         })
     }
-    render () {
-        return (
-            <div 
-                id={"todo" + this.props.todo.id} 
-                className="todo-item bg-light border-bottom mb-1"
-            >
-                <button 
+
+    return (
+        // Classes of some element changes based on task completion 
+        <div 
+            id={"todo" + todo.id} 
+            className={todo.completed
+                ? "todo-item bg-light border-bottom mb-1 completed"
+                : "todo-item bg-light border-bottom mb-1"
+            }
+        >
+            {todo.completed  
+                ? <button 
+                    className="btn bg-gray" 
+                    onClick={() => markTodo("unmark")}>
+                    <i className="bi bi-check-circle-fill text-secondary"></i>
+                </button>
+                : <button 
                     className="btn bg-lightblue" 
-                    onClick={() => this.remove_todo(this.props.todo.id)}
-                >
+                    onClick={() => markTodo("mark")}>
                     <i className="bi bi-check-circle"></i>
                 </button>
-                <div className="py-1 overflow-hide">
-                    <div>{this.props.todo.title}</div>
-                    <small className="text-secondary">
-                        {this.props.todo.description}
-                    </small>
-                </div>
-                <div className="py-1 datetime">
-                    <small>
-                        {time_remain(this.props.todo.deadline)}
-                    </small>
-                </div>
+            }
+            <div className="py-1 overflow-hide">
+                <div>{todo.title}</div>
+                <small className="text-secondary">
+                    {todo.description}
+                </small>
             </div>
-        )
-    }
-}
-
-// "Add a todo" button:
-function AddTodo() {
-    return (
-        <div className="mb-1 text-center add-item">
-            <button className="btn bg-light w-100">
-                <i className="bi bi-plus-square"></i>&nbsp;
-                Add a Todo
-            </button>
+            <div className="py-1 datetime">
+                <small>
+                    {time_remain(todo.deadline)}
+                </small>
+            </div>
         </div>
     )
 }
@@ -99,50 +103,75 @@ function time_remain(deadline_str) {
     return remain;
 }
 
+// For adding todos:
+function AddTodoButton() {
+    return (
+        <div className="mb-1 text-center add-item">
+            <button type="button" data-bs-toggle="modal" data-bs-target="#add-todo" className="btn bg-light w-100">
+                <i className="bi bi-plus-square"></i>&nbsp;
+                Add a Todo
+            </button>
+        </div>
+    )
+}
 
-// Used to display all of the INCOMPLETE todo items together:
-class Todos extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {todo_list: []}
-        this.fetch_incomplete = this.fetch_incomplete.bind(this);
-    }
-
-    fetch_incomplete() {
-        // Fetch all todos from Django if the element mounts:
-        fetch("/todos").then(response => response.json())
-            .then(todo_list_all => {
-                // Filter all the todos that are not yet complete:
-                let todo_list_filtered = todo_list_all.filter(todo => {
-                    return todo.completed == null;
-                });
-                console.log(todo_list_filtered);
-                this.setState({todo_list: todo_list_filtered});
-            });
-    }
-
-    componentDidMount() {
-        this.fetch_incomplete();
-    }
-
-    render () {
-        return (
-            <div>
-                <AddTodo />
-                {this.state.todo_list.map(todo => (
-                    <TodoItem 
-                        key = {todo.id} 
-                        todo = {todo} 
-                        fetch_incomplete = {this.fetch_incomplete}
-                    />
-                ))}
+function AddTodoModal() {
+    return (
+      <div className="modal fade" id="add-todo" tabindex="-1" aria-labelledby="addTodoModal" aria-hidden="true">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="addTodoModal">
+                Add a Todo
+              </h5>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-        )
-    }
+            <div className="modal-body">
+              <form action="">
+                <input type="text" className="form-control mb-2" name="title" placeholder="Title"/>
+                <textarea name="description" className="form-control mb-2" placeholder="Description"/>
+                <input type="datetime-local" className="form-control" placeholder="Deadline"/>
+              </form>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-success">
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
 }
 
-export default function TodoAll() {
-    ReactDOM.render(<Todos />, document.querySelector("#todos"));
-    return null;
+// Used to display all of the todo items together:
+function Todos() {
+    const [todoAll, setTodoAll] = React.useState([]);
+
+    // This only runs on mount (does not run on state update);
+    React.useEffect(() => {
+        fetch("/todos").then(response => response.json())
+            .then(todoAllFetched => {
+                setTodoAll(todoAllFetched);
+            });
+        return () => {
+            setTodoAll([])
+        };
+    }, []);
+
+    return (
+        <div>
+            <AddTodoButton />
+            <AddTodoModal />
+            {todoAll.map(todo => (
+                <TodoItem 
+                    key = {todo.id} 
+                    todo = {todo} 
+                    setTodoAll = {setTodoAll}
+                />
+            ))}
+        </div>
+    )
 }
 
+export default Todos;

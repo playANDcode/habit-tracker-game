@@ -80,8 +80,20 @@ header > a:hover {
 	background-color: #acffe3;
 }
 
+.todo-item.completed {
+	color: gray;
+}
+
 .bg-lightblue:hover {
 	background-color: #9ff9d7;
+}
+
+.bg-gray {
+	background-color: #ccc;
+}
+
+.bg-gray:hover {
+	background-color: #b9b9b9;
 }
 
 .overflow-hide {

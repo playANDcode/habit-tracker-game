@@ -1,58 +1,62 @@
 // Import csrf token:
-import csrftoken from "./csrf.js"; // A single todo item:
+import csrftoken from "./csrf.js";
+import ReactDOM from "react-dom";
+import React from "react"; // A single todo item:
 
-class TodoItem extends React.Component {
-  // Used to mark a todo as completed:
-  remove_todo(todo_id) {
-    alert("removed"); // Send a fetch request to mark the todo:
+function TodoItem(props) {
+  const [todo, setTodo] = React.useState(props.todo); // Used to mark/unmark a todo as completed:
 
+  function markTodo(action) {
+    // "action" parameter can be "mark" or "unmark"
+    // Send a fetch request to mark the todo in Django:
     fetch("/todos", {
       method: "PUT",
       headers: {
         "X-CSRFToken": csrftoken
       },
       body: JSON.stringify({
-        id: todo_id,
-        action: "check"
+        id: todo.id,
+        action: action // "mark" or "unmark"
+
       })
     }).then(response => {
       if (!response.ok) {
+        // If something is wrong
         response.text().then(text => alert(text));
       } else {
-        this.props.fetch_incomplete();
+        alert("Success!"); // Update the todo element:
+
+        response.json().then(json => {
+          setTodo(json);
+        });
       }
     });
   }
 
-  render() {
-    return /*#__PURE__*/React.createElement("div", {
-      id: "todo" + this.props.todo.id,
-      className: "todo-item bg-light border-bottom mb-1"
-    }, /*#__PURE__*/React.createElement("button", {
+  return (
+    /*#__PURE__*/
+    // Classes of some element changes based on task completion 
+    React.createElement("div", {
+      id: "todo" + todo.id,
+      className: todo.completed ? "todo-item bg-light border-bottom mb-1 completed" : "todo-item bg-light border-bottom mb-1"
+    }, todo.completed ? /*#__PURE__*/React.createElement("button", {
+      className: "btn bg-gray",
+      onClick: () => markTodo("unmark")
+    }, /*#__PURE__*/React.createElement("i", {
+      className: "bi bi-check-circle-fill text-secondary"
+    })) : /*#__PURE__*/React.createElement("button", {
       className: "btn bg-lightblue",
-      onClick: () => this.remove_todo(this.props.todo.id)
+      onClick: () => markTodo("mark")
     }, /*#__PURE__*/React.createElement("i", {
       className: "bi bi-check-circle"
     })), /*#__PURE__*/React.createElement("div", {
       className: "py-1 overflow-hide"
-    }, /*#__PURE__*/React.createElement("div", null, this.props.todo.title), /*#__PURE__*/React.createElement("small", {
+    }, /*#__PURE__*/React.createElement("div", null, todo.title), /*#__PURE__*/React.createElement("small", {
       className: "text-secondary"
-    }, this.props.todo.description)), /*#__PURE__*/React.createElement("div", {
+    }, todo.description)), /*#__PURE__*/React.createElement("div", {
       className: "py-1 datetime"
-    }, /*#__PURE__*/React.createElement("small", null, time_remain(this.props.todo.deadline))));
-  }
-
-} // "Add a todo" button:
-
-
-function AddTodo() {
-  return /*#__PURE__*/React.createElement("div", {
-    className: "mb-1 text-center add-item"
-  }, /*#__PURE__*/React.createElement("button", {
-    className: "btn bg-light w-100"
-  }, /*#__PURE__*/React.createElement("i", {
-    className: "bi bi-plus-square"
-  }), "\xA0 Add a Todo"));
+    }, /*#__PURE__*/React.createElement("small", null, time_remain(todo.deadline))))
+  );
 } // This is used to calculate the remaining time before a deadline:
 
 
@@ -87,47 +91,85 @@ function time_remain(deadline_str) {
 
   ;
   return remain;
-} // Used to display all of the INCOMPLETE todo items together:
+} // For adding todos:
 
 
-class Todos extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      todo_list: []
-    };
-    this.fetch_incomplete = this.fetch_incomplete.bind(this);
-  }
+function AddTodoButton() {
+  return /*#__PURE__*/React.createElement("div", {
+    className: "mb-1 text-center add-item"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    "data-bs-toggle": "modal",
+    "data-bs-target": "#add-todo",
+    className: "btn bg-light w-100"
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "bi bi-plus-square"
+  }), "\xA0 Add a Todo"));
+}
 
-  fetch_incomplete() {
-    // Fetch all todos from Django if the element mounts:
-    fetch("/todos").then(response => response.json()).then(todo_list_all => {
-      // Filter all the todos that are not yet complete:
-      let todo_list_filtered = todo_list_all.filter(todo => {
-        return todo.completed == null;
-      });
-      console.log(todo_list_filtered);
-      this.setState({
-        todo_list: todo_list_filtered
-      });
+function AddTodoModal() {
+  return /*#__PURE__*/React.createElement("div", {
+    className: "modal fade",
+    id: "add-todo",
+    tabindex: "-1",
+    "aria-labelledby": "addTodoModal",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "modal-dialog"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "modal-content"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "modal-header"
+  }, /*#__PURE__*/React.createElement("h5", {
+    className: "modal-title",
+    id: "addTodoModal"
+  }, "Add a Todo"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "btn-close",
+    "data-bs-dismiss": "modal",
+    "aria-label": "Close"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "modal-body"
+  }, /*#__PURE__*/React.createElement("form", {
+    action: ""
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    className: "form-control mb-2",
+    name: "title",
+    placeholder: "Title"
+  }), /*#__PURE__*/React.createElement("textarea", {
+    name: "description",
+    className: "form-control mb-2",
+    placeholder: "Description"
+  }), /*#__PURE__*/React.createElement("input", {
+    type: "datetime-local",
+    className: "form-control",
+    placeholder: "Deadline"
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "modal-footer"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    className: "btn btn-success"
+  }, "Save")))));
+} // Used to display all of the todo items together:
+
+
+function Todos() {
+  const [todoAll, setTodoAll] = React.useState([]); // This only runs on mount (does not run on state update);
+
+  React.useEffect(() => {
+    fetch("/todos").then(response => response.json()).then(todoAllFetched => {
+      setTodoAll(todoAllFetched);
     });
-  }
-
-  componentDidMount() {
-    this.fetch_incomplete();
-  }
-
-  render() {
-    return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(AddTodo, null), this.state.todo_list.map(todo => /*#__PURE__*/React.createElement(TodoItem, {
-      key: todo.id,
-      todo: todo,
-      fetch_incomplete: this.fetch_incomplete
-    })));
-  }
-
+    return () => {
+      setTodoAll([]);
+    };
+  }, []);
+  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(AddTodoButton, null), /*#__PURE__*/React.createElement(AddTodoModal, null), todoAll.map(todo => /*#__PURE__*/React.createElement(TodoItem, {
+    key: todo.id,
+    todo: todo,
+    setTodoAll: setTodoAll
+  })));
 }
 
-export default function TodoAll() {
-  ReactDOM.render( /*#__PURE__*/React.createElement(Todos, null), document.querySelector("#todos"));
-  return null;
-}
+export default Todos;
