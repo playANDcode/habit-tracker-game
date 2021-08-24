@@ -12,6 +12,10 @@ header > a:hover {
 	box-shadow: none;
 }
 
+img#adventure {
+	max-height: 200px;
+	max-width: 100%;
+}
 
 #main_div {
 	min-height: 70vh;

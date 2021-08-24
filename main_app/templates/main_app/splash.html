@@ -1,15 +1,21 @@
 {% extends "main_app/layout.html" %}
+{% load static %}
 {% block body %}
 
-<div class="container-fluid py-5 px-sm-5 my-4 bg-gray-200">
-	<h1 class="fw-bold">Habit50 RPG</h1>
-	<p class="fs-4">
-		A gamified task manager similar to Habitica.
-	</p>
-	<button onclick="document.location='/login'" class="btn btn-secondary me-2 mb-2">Login</button>  
-	<button onclick="document.location='/register'" class="btn btn-secondary mb-2">Sign Up</button>
+<div class="container-fluid py-3 mx-0 my-4 bg-gray-200 row">
+	<div class="col-sm-3 py-3">
+		<img id="adventure" src="{% static 'main_app/images/adventure.svg' %}" alt="">
+	</div>
+	<div class="col-sm py-sm-5 px-md-5 ">
+		<h1 class="fw-bold">Habit50 RPG</h1>
+		<p class="fs-4">
+			A gamified task manager similar to Habitica.
+		</p>
+		<button onclick="document.location='/login'" class="btn btn-secondary me-2 mb-2">Login</button>  
+		<button onclick="document.location='/register'" class="btn btn-secondary mb-2">Sign Up</button>
+	</div>
 </div>
-<div class="container-fluid pt-4 border-top row">
+<div class="mx-0 container-fluid pt-4 border-top row">
 	<div class="col-md px-sm-5">
 		<h2>Track Your Habits and Goals</h2>
 		<p class="fs-6">
