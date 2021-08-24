@@ -50,25 +50,30 @@ function TodoItem(props) {
                 ? <button 
                     className="btn bg-success" 
                     onClick={() => markTodo("unmark")}>
-                    <i class="fas fa-check-square"></i>
+                    <i className="fas fa-check-square"></i>
                 </button>
                 : <button 
                     className="btn bg-warning" 
                     onClick={() => markTodo("mark")}>
-                    <i class="far fa-check-square"></i>
+                    <i className="far fa-check-square"></i>
                 </button>
             }
-            <div className="py-1 overflow-hide">
+            <div className="py-1 overflow-hide todo-title">
                 <div>{todo.title}</div>
                 <small className="text-secondary">
                     {todo.description}
                 </small>
             </div>
-            <div className="py-1 datetime">
-                <small>
-                    {time_remain(todo.deadline)}
-                </small>
-            </div>
+            {todo.completed
+                ?<button className="btn delete-todo">
+                    <i class="text-light far fa-trash-alt"></i>
+                </button>
+                :<div className="py-1 deadline">
+                    <small>
+                        {time_remain(todo.deadline)}
+                    </small>
+                </div>
+            }
         </div>
     )
 }
@@ -114,7 +119,7 @@ function AddTodoButton() {
     return (
         <div className="mb-1 text-center add-item">
             <button type="button" data-bs-toggle="modal" data-bs-target="#add-todo" className="btn bg-gray-200 w-100">
-                <i className="bi bi-plus-square"></i>&nbsp;
+                <i className="far fa-plus-square"></i>&nbsp;
                 Add a Todo
             </button>
         </div>

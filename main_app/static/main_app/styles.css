@@ -12,10 +12,12 @@ header > a:hover {
 	box-shadow: none;
 }
 
-img#adventure {
-	max-height: 200px;
-	max-width: 100%;
+#avatar {
+	height: 125px;
+	padding: 10px;
+	background-color: #f5ecd2;
 }
+
 
 #main_div {
 	min-height: 70vh;
@@ -38,14 +40,11 @@ img#adventure {
 
 .todo-item {
 	display: flex;
-	position: relative;
-	padding-right: 5.5em;
 	background-color: var(--bs-gray-200);
 }
 
 .todo-item button {
 	border-radius: 0;
-	margin-right: 0.4em;
 }
 
 .todo-item.completed, .todo-item.completed small {
@@ -57,10 +56,8 @@ img#adventure {
 	overflow: hidden;
 }
 
-.datetime {
+.deadline {
 	padding: 10px;
-	position: absolute;
-	right: 0;
 }
 
 #profile_pic {
@@ -95,4 +92,13 @@ img#adventure {
 
 td.rdtToday {
 	background-color: #e1effb;
+}
+
+.delete-todo {
+	background-color: gray;
+}
+
+.todo-title {
+	flex-grow: 1;
+	padding-left: 10px;
 }
