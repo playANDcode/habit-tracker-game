@@ -30,12 +30,4 @@ main {
 	margin-bottom: -1px;
 }
 
-.form-signin button {
-	border: none;
-	background-color: #009262;
-}
 
-.form-signin button:hover {
-	border: none;
-	background-color: #006e4a;
-}

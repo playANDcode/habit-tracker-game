@@ -10,7 +10,7 @@
 {% block body %}
 <main class="text-center form-signin">
 	<form method="POST" action="/register">
-		<h1 class="h3 mb-3 fw-normal">Registration Form</h1>
+		<h1 class="h3 mb-3 fw-normal">Create an Account</h1>
 		<div class="form-floating">
 			<input type="text" name="username" class="form-control" id="floatingInput" placeholder="username">
 			<label for="floatingInput">Username</label>
@@ -28,7 +28,7 @@
 			<label for="floatingPassword">Confirm Password</label>
 		</div>
 		{% csrf_token %}
-		<button class="w-100 btn btn-lg btn-primary" type="submit">Sign Up</button>
+		<button class="w-100 btn btn-lg btn-success text-white" type="submit">Sign Up</button>
 	</form>
 </main>
 {% endblock %} 
