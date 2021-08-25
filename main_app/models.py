@@ -5,11 +5,11 @@ from django.contrib.auth.models import AbstractUser
 class User(AbstractUser):
     nickname = models.CharField(max_length=16)
     todo = models.ManyToManyField("Todo")
-    avatar = models.CharField(max_length=16)
-    health_current = models.IntegerField()
-    health_max = models.IntegerField()
-    exp_current = models.IntegerField()
-    exp_next = models.IntegerField()
+    avatar = models.CharField(max_length=13, default="spider")
+    health_current = models.IntegerField(default=50)
+    health_max = models.IntegerField(default=50)
+    exp_current = models.IntegerField(default=0)
+    exp_next = models.IntegerField(default=100)
 
 class Todo(models.Model):
     title = models.CharField(max_length=30)

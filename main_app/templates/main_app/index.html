@@ -10,7 +10,8 @@
 		<!-- Profile Banner -->
 		<div id="profile_banner" class="my-3">
 			<!-- Profile Avatar -->
-			<img class="avatar" src="{% static 'main_app/images/profile_sample.svg' %}" alt="Avatar">
+
+			<img class="avatar" src="{% static 'main_app/images/' %}{{ user.avatar }}.svg" alt="Avatar">
 			<!-- Profile Status -->
 			<div class="container-fluid">
 				<h6 class="my-2 border-bottom">{{ user.nickname }}, Level 1</h6>
