@@ -10,7 +10,7 @@
 		<!-- Profile Banner -->
 		<div id="profile_banner" class="my-3">
 			<!-- Profile Avatar -->
-			<img id="avatar" src="{% static 'main_app/profiles/profile_sample.svg' %}" alt="Avatar">
+			<img class="avatar" src="{% static 'main_app/images/profile_sample.svg' %}" alt="Avatar">
 			<!-- Profile Status -->
 			<div class="container-fluid">
 				<h6 class="my-2 border-bottom">{{ user.nickname }}, Level 1</h6>
@@ -64,8 +64,69 @@
 		
 	</div>
 	<!-- Column 2 -->
-	<div class="col-sm-4 border-start pt-3">
+	<div class="col-sm-5 border-start py-3">
 		<h3>Rewards</h3>
+		<div class="mb-3 border-bottom">
+			<small>
+				You have 100 <i class="fas fa-coins"></i>
+			</small>
+		</div>
+		<div class="card-group row row-cols-auto g-3">
+			<div class="col">
+				<div class="card">
+					<img class="avatar" src={% static 'main_app/images/food.svg' %} alt="Elf">
+					<div class="card-body p-2">
+						<small class="text-secondary">Food (10HP)</small>
+						<small>75 <i class="fas fa-coins"></i></small>
+					</div>
+				</div>
+			</div>
+			<div class="col">
+				<div class="card">
+					<img class="avatar" src={% static 'main_app/images/potion.svg' %} alt="Elf">
+					<div class="card-body p-2">
+						<small class="text-secondary">40HP Potion</small>
+						<small>300 <i class="fas fa-coins"></i></small>
+					</div>
+				</div>
+			</div>
+			<div class="col">
+				<div class="card">
+					<img class="avatar" src={% static 'main_app/images/orc.svg' %} alt="Orc">
+					<div class="card-body p-2">
+						<small class="text-secondary">Orc Avatar</small>
+						<small>500 <i class="fas fa-coins"></i></small>
+					</div>
+				</div>
+			</div>
+			<div class="col">
+				<div class="card">
+					<img class="avatar" src={% static 'main_app/images/elf-girl.svg' %} alt="Elf">
+					<div class="card-body p-2">
+						<small class="text-secondary">Elf Avatar</small>
+						<small>900 <i class="fas fa-coins"></i></small>
+					</div>
+				</div>
+			</div>
+			<div class="col">
+				<div class="card">
+					<img class="avatar" src={% static 'main_app/images/grim-reaper.svg' %} alt="Grim Reaper">
+					<div class="card-body p-2">
+						<small class="text-secondary">Reaper Avatar</small>
+						<small>2000 <i class="fas fa-coins"></i></small>
+					</div>
+				</div>
+			</div>
+			<div class="col">
+				<div class="card">
+					<img class="avatar" src={% static 'main_app/images/witch.svg' %} alt="Elf">
+					<div class="card-body p-2">
+						<small class="text-secondary">Witch Avatar</small>
+						<small>3000 <i class="fas fa-coins"></i></small>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 

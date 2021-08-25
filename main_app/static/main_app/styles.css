@@ -12,10 +12,22 @@ header > a:hover {
 	box-shadow: none;
 }
 
-#avatar {
+.avatar {
 	height: 125px;
 	padding: 10px;
 	background-color: #f5ecd2;
+}
+
+.card {
+	width: 125px;
+}
+
+.card-body small {
+	display: block;
+}
+
+.text-gray {
+	color: var(--bs-gray-700);
 }
 
 
@@ -104,6 +116,10 @@ td.rdtToday {
 
 .btn-success {
 	color: var(--bs-light);
+}
+
+.fa-coins {
+	color: #ef7c20;
 }
 
 .todo-title {
