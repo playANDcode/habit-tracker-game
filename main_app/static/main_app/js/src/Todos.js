@@ -35,27 +35,6 @@ function TodoItem(props) {
             }
         })
     }
-    //
-    // Used to delete a Todo
-    function deleteTodo() {
-        fetch("/todos", {
-            method: "PUT",
-            headers: {"X-CSRFToken": csrftoken},
-            body: JSON.stringify({
-                id: todo.id,
-                action: "delete",
-            })
-        }).then(response => {
-            if (response.ok) {
-                // delete from state
-                props.setTodoAll(
-                    props.todoAll.filter(todo_i => todo_i.id != todo.id)
-                )
-            } else {
-                response.text().then(text => alert(text))
-            }
-        })
-    }
 
     function editTodo() {
         // The following block is used to prefill the edit form 
@@ -67,6 +46,11 @@ function TodoItem(props) {
         let deadline = form.querySelector("input[name='deadline']");
         let deadline_date = new Date(todo.deadline);
         deadline.value = deadline_date.toLocaleString();
+
+        // The following is used to handle the delete button on the form:
+        document.querySelector("#delete-edit-todo").onclick = () => {
+            props.deleteTodo(todo.id);
+        };
 
         // Handle edit form submission:
         form.onsubmit = (event) => {
@@ -130,10 +114,10 @@ function TodoItem(props) {
                 </small>
             </div>
             {todo.completed
-                ?<button className="btn delete-todo" onClick={deleteTodo}>
+                ?<button className="btn delete-item-button" onClick={() => props.deleteTodo(todo.id)}>
                     <i className="text-light far fa-trash-alt"></i>
                 </button>
-                :<button data-bs-toggle="modal" data-bs-target="#edit-todo" onClick={editTodo} className="btn delete-todo">
+                :<button data-bs-toggle="modal" data-bs-target="#edit-todo" onClick={editTodo} className="btn delete-item-button">
                     <i className="text-light fas fa-pencil-alt"></i>
                 </button>
             }
@@ -189,6 +173,7 @@ function AddTodoButton() {
     )
 }
 
+
 function TodoForm({submit, formName}) {
     return (
         <form id={formName} onSubmit={submit}>
@@ -206,6 +191,8 @@ function TodoForm({submit, formName}) {
 // Used for rendering the edit-todo form:
 function EditTodoForm() {
     return <TodoForm submit={() => {}} formName="edit-todo-form"/>;
+    // The submit is blank since it will be changed dynamically
+    // based on which Todo item is clicked
 }
 
 // Used for rendering and handling form submission for adding a Todo
@@ -238,6 +225,44 @@ function AddTodoForm({setTodoAll, todoAll}) {
 function Todos() {
     const [todoAll, setTodoAll] = React.useState([]);
 
+    // Modals are used for adding/editing Todos
+    // The following are used to set the footers of each Modal
+	const addTodoSubmitButton = 
+		<button form="add-todo-form" type="submit" data-bs-dismiss="modal" className="btn btn-success">
+			Save
+		</button>;
+	const editTodoButtons = 
+		<div>
+			<button id="delete-edit-todo" data-bs-dismiss="modal" className="btn delete-item-button mx-2">
+                <i className="text-light far fa-trash-alt"></i>
+            </button>
+			<button id="submit-edit-todo" form="edit-todo-form" type="submit" data-bs-dismiss="modal" className="btn btn-success">
+				Save
+			</button>
+		</div>;
+
+    //
+    // Used to delete a Todo
+    function deleteTodo(id) {
+        fetch("/todos", {
+            method: "PUT",
+            headers: {"X-CSRFToken": csrftoken},
+            body: JSON.stringify({
+                id: id,
+                action: "delete",
+            })
+        }).then(response => {
+            if (response.ok) {
+                // delete from state
+                setTodoAll(
+                    todoAll.filter(todo_i => todo_i.id != id)
+                )
+            } else {
+                response.text().then(text => alert(text))
+            }
+        })
+    }
+
     // This only runs on mount (does not run on state update);
     React.useEffect(() => {
         // Fetch all todos from Django:
@@ -259,21 +284,20 @@ function Todos() {
                     todoAll={todoAll}
                     setTodoAll={setTodoAll}
                 />
-                formName="add-todo-form"
+                footer={addTodoSubmitButton}
                 modal_id="add-todo"
             />
             <Modal 
                 title="Edit a Todo" 
                 content=<EditTodoForm />
-                formName="edit-todo-form"
+                footer={editTodoButtons}
                 modal_id="edit-todo"
             />
             {todoAll.map(todo => (
                 <TodoItem 
                     key = {todo.id} 
                     todo = {todo} 
-                    setTodoAll = {setTodoAll}
-                    todoAll = {todoAll}
+                    deleteTodo = {deleteTodo}
                 />
             ))}
         </div>

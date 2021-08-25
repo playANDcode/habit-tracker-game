@@ -98,8 +98,12 @@ td.rdtToday {
 	background-color: #e1effb;
 }
 
-.delete-todo {
+.delete-item-button {
 	background-color: gray;
+}
+
+.btn-success {
+	color: var(--bs-light);
 }
 
 .todo-title {
