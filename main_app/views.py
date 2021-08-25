@@ -79,21 +79,42 @@ def todos(request):
     if request.method == "PUT":
         try:
             data = json.loads(request.body)
-            todo = Todo.objects.get(id=data["id"])
+            # User can only access his/her own todo items:
+            todo = request.user.todo.get(id=data["id"])
         except:
             return HttpResponse("Todo object not found", status=404)
+
         # Mark Todo as completed:
         if data["action"] == "mark":
             todo.completed = datetime.now(timezone.utc)
             todo.save()
             # Return the updated Todo object:
             return JsonResponse(todo.serialize(), status=200)
+
         # Unmark Todo (set as incompleted):
         elif data["action"] == "unmark":
             todo.completed = None
             todo.save()
             # Return the updated Todo object:
             return JsonResponse(todo.serialize(), status=200)
+
+        # Edit Todo
+        elif data["action"] == "edit":
+            try:
+                todo.title = data["title"]
+                todo.description = data["description"]
+                new_deadline = datetime.fromisoformat(
+                    data["deadline"].replace("Z", "+00:00"))
+                todo.deadline = new_deadline
+                todo.save()
+                return JsonResponse(todo.serialize(), status=200)
+            except:
+                return HttpResponse("Failed to Edit", status=400)
+        # Delete Todo
+        elif data["action"] == "delete":
+            todo.delete()
+            return HttpResponse("Deleted", status=200)
+
     # For creating a Todo:
     elif request.method == "POST":
         try:

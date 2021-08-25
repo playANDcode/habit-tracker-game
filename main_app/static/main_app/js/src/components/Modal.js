@@ -1,9 +1,9 @@
 import React from "react";
 
 // Content can be a react app
-export default function Modal({title, content, formName}) {
+export default function Modal({title, content, formName, modal_id}) {
     return (
-      <div className="modal fade" id="add-todo" tabIndex="-1" aria-labelledby="addTodoModal" aria-hidden="true">
+      <div className="modal fade" id={modal_id} tabIndex="-1" aria-labelledby="addTodoModal" aria-hidden="true">
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
@@ -16,7 +16,7 @@ export default function Modal({title, content, formName}) {
               {content}
             </div>
             <div className="modal-footer">
-              <button form={formName} type="submit" className="btn btn-success">
+              <button form={formName} type="submit" data-bs-dismiss="modal" className="btn btn-success">
                 Save
               </button>
             </div>

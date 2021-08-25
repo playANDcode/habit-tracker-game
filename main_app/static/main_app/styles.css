@@ -60,6 +60,10 @@ header > a:hover {
 	padding: 10px;
 }
 
+.todo-desc {
+	display: flex;
+}
+
 #profile_pic {
 	display: inline-block;
 	width: 130px;

@@ -35,6 +35,64 @@ function TodoItem(props) {
             }
         })
     }
+    //
+    // Used to delete a Todo
+    function deleteTodo() {
+        fetch("/todos", {
+            method: "PUT",
+            headers: {"X-CSRFToken": csrftoken},
+            body: JSON.stringify({
+                id: todo.id,
+                action: "delete",
+            })
+        }).then(response => {
+            if (response.ok) {
+                // delete from state
+                props.setTodoAll(
+                    props.todoAll.filter(todo_i => todo_i.id != todo.id)
+                )
+            } else {
+                response.text().then(text => alert(text))
+            }
+        })
+    }
+
+    function editTodo() {
+        // The following block is used to prefill the edit form 
+        let form = document.querySelector("#edit-todo form");
+        form.querySelector("input[name='id']").value = todo.id;
+        form.querySelector("input[name='title']").value = todo.title;
+        let desc = form.querySelector("textarea[name='description']");
+        desc.value = todo.description;
+        let deadline = form.querySelector("input[name='deadline']");
+        let deadline_date = new Date(todo.deadline);
+        deadline.value = deadline_date.toLocaleString();
+
+        // Handle edit form submission:
+        form.onsubmit = (event) => {
+            event.preventDefault();
+            console.log("Submitted");
+            let formData = new FormData(form);
+            let new_deadline = new Date(formData.get("deadline"));
+            formData.set("deadline", new_deadline.toISOString());
+            // Used to tell Django that the "action" is editing a Todo:
+            let dataObject = {"action": "edit"};
+            formData.forEach((value, key) => {
+                dataObject[key] = value;
+            });
+            fetch("/todos", {
+                method: "PUT",
+                headers: {"X-CSRFToken": csrftoken},
+                body: JSON.stringify(dataObject)
+            }).then(response => {
+                if (!response.ok) {
+                    response.text().then(text => alert(text));
+                } else {
+                    response.json().then(json => setTodo(json));
+                }
+            })
+        }
+    }
 
     return (
         // Classes of some element changes based on task completion 
@@ -59,20 +117,25 @@ function TodoItem(props) {
                 </button>
             }
             <div className="py-1 overflow-hide todo-title">
-                <div>{todo.title}</div>
-                <small className="text-secondary">
-                    {todo.description}
+                <div>
+                    {todo.title}
+                </div>
+                <small className="todo-desc text-secondary">
+                    <span>
+                        {time_remain(todo.deadline)}
+                    </span>
+                    <span>
+                        {todo.description ? ": " + todo.description: ""}
+                    </span>
                 </small>
             </div>
             {todo.completed
-                ?<button className="btn delete-todo">
-                    <i class="text-light far fa-trash-alt"></i>
+                ?<button className="btn delete-todo" onClick={deleteTodo}>
+                    <i className="text-light far fa-trash-alt"></i>
                 </button>
-                :<div className="py-1 deadline">
-                    <small>
-                        {time_remain(todo.deadline)}
-                    </small>
-                </div>
+                :<button data-bs-toggle="modal" data-bs-target="#edit-todo" onClick={editTodo} className="btn delete-todo">
+                    <i className="text-light fas fa-pencil-alt"></i>
+                </button>
             }
         </div>
     )
@@ -114,7 +177,7 @@ function time_remain(deadline_str) {
     return remain;
 }
 
-// For adding todos:
+// Button for adding todos:
 function AddTodoButton() {
     return (
         <div className="mb-1 text-center add-item">
@@ -126,30 +189,10 @@ function AddTodoButton() {
     )
 }
 
-
-function AddTodoForm({setTodoAll, todoAll}) {
-    let submit = (event) => {
-        event.preventDefault();
-        let formData = new FormData(event.target);
-        let deadline = new Date(formData.get("deadline"));
-        formData.set("deadline", deadline.toISOString());
-        fetch("/todos", {
-            method: "POST",
-            headers: {"X-CSRFToken": csrftoken},
-            body: formData
-        }).then(response => {
-            if (response.ok) {
-                response.json().then(newTodo => {
-                    setTodoAll([...todoAll, newTodo])
-                })
-            } else {
-                alert("Something is wrong")
-            }
-        });
-        event.target.reset();
-    }
+function TodoForm({submit, formName}) {
     return (
-        <form id="todoForm" onSubmit={submit}>
+        <form id={formName} onSubmit={submit}>
+            <input type="hidden" name="id"/>
             <input type="text" className="form-control mb-2" name="title" placeholder="Title"/>
             <textarea name="description" className="form-control mb-2" placeholder="Description"/>
             <Datetime inputProps={{
@@ -160,6 +203,37 @@ function AddTodoForm({setTodoAll, todoAll}) {
     )
 }
 
+// Used for rendering the edit-todo form:
+function EditTodoForm() {
+    return <TodoForm submit={() => {}} formName="edit-todo-form"/>;
+}
+
+// Used for rendering and handling form submission for adding a Todo
+function AddTodoForm({setTodoAll, todoAll}) {
+    // Submit the form
+    let submit = (event) => {
+        event.preventDefault();
+        let formData = new FormData(event.target);
+        let deadline = new Date(formData.get("deadline"));
+        formData.set("deadline", deadline.toISOString());
+        fetch("/todos", {
+            method: "POST",
+            headers: {"X-CSRFToken": csrftoken},
+            body: formData
+            }).then(response => {
+            if (response.ok) {
+                response.json().then(newTodo => {
+                    setTodoAll([...todoAll, newTodo])
+                })
+            } else {
+                alert("Something is wrong")
+            }
+        });
+        event.target.reset();
+    }
+    return <TodoForm submit={submit} formName="add-todo-form"/>;
+}
+
 // Used to display all of the todo items together:
 function Todos() {
     const [todoAll, setTodoAll] = React.useState([]);
@@ -168,9 +242,9 @@ function Todos() {
     React.useEffect(() => {
         // Fetch all todos from Django:
         fetch("/todos").then(response => response.json())
-            .then(todoAllFetched => {
-                setTodoAll(todoAllFetched);
-            });
+        .then(todoAllFetched => {
+            setTodoAll(todoAllFetched);
+        });
         return () => {
             setTodoAll([])
         };
@@ -185,13 +259,21 @@ function Todos() {
                     todoAll={todoAll}
                     setTodoAll={setTodoAll}
                 />
-                formName="todoForm"
+                formName="add-todo-form"
+                modal_id="add-todo"
+            />
+            <Modal 
+                title="Edit a Todo" 
+                content=<EditTodoForm />
+                formName="edit-todo-form"
+                modal_id="edit-todo"
             />
             {todoAll.map(todo => (
                 <TodoItem 
                     key = {todo.id} 
                     todo = {todo} 
                     setTodoAll = {setTodoAll}
+                    todoAll = {todoAll}
                 />
             ))}
         </div>
