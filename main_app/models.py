@@ -6,6 +6,7 @@ class User(AbstractUser):
     nickname = models.CharField(max_length=16)
     todo = models.ManyToManyField("Todo")
     avatar = models.CharField(max_length=13, default="spider")
+    level = models.IntegerField(default=1)
     health_current = models.IntegerField(default=50)
     health_max = models.IntegerField(default=50)
     exp_current = models.IntegerField(default=0)

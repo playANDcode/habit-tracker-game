@@ -14,14 +14,26 @@
 			<img class="avatar" src="{% static 'main_app/images/' %}{{ user.avatar }}.svg" alt="Avatar">
 			<!-- Profile Status -->
 			<div class="container-fluid">
-				<h6 class="my-2 border-bottom">{{ user.nickname }}, Level 1</h6>
-				<small>Health 50/50</small>
+				<h6 class="my-2 border-bottom">
+					{{ user.nickname }}, Level {{ user.level }}
+				</h6>
+
+				<!-- Health bar -->
+				<small id="health">
+					Health 
+					{{ user.health_current }}/{{ user.health_max }}
+				</small>
 				<div class="progress">
-					<div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+					<div class="progress-bar bg-danger" role="progressbar" style="width: {{ hp_percent }}%" aria-valuenow={{ user.health_current }} aria-valuemin="0" aria-valuemax={{ user.health_max }}></div>
 				</div>
-				<small>Exp 10/100</small>
+
+				<!-- Exp Bar -->
+				<small id="exp">
+					Exp 
+					{{ user.exp_current }}/{{ user.exp_next }}
+				</small>
 				<div class="progress">
-					<div class="progress-bar bg-info" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+					<div class="progress-bar bg-info" role="progressbar" style="width: 10%" aria-valuenow={{ user.exp_current }} aria-valuemin="0" aria-valuemax={{ user.exp_next }}></div>
 				</div>
 			</div>
 		</div>
